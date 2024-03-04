@@ -14,7 +14,6 @@
   "author": "Ishola Obafemi",
   "license": "ISC",
   "dependencies": {
-    "@inquirer/prompts": "^4.1.0",
-    "@inquirer/select": "^2.0.0"
+    "@inquirer/prompts": "^4.1.0"
   }
 }
