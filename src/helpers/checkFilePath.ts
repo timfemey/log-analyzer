@@ -3,6 +3,10 @@ import { normalize, extname } from "node:path/posix";
 
 
 export function checkFilePath(filePath: string): "json" | "text" {
+    if (filePath.match(/^"|"$/g)) {
+        throw new Error("Remove Quotes from end and start of path given text");
+
+    }
     const dir = normalize(filePath)
 
     if (existsSync(dir)) {
