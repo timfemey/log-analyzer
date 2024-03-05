@@ -3,4 +3,4 @@ import { readFile } from './controllers/readFiles.js';
 
 const fileName = await input({ message: 'Enter File Path to Log File: ' });
 
-const readFiles = readFile(fileName)
+readFile(fileName)
