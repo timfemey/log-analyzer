@@ -2,8 +2,10 @@ import analyzeText from "../helpers/analyzeText.js";
 import { checkFilePath } from "../helpers/checkFilePath.js";
 import { createReadStream } from "node:fs";
 import { parsedLines } from "../helpers/parseLines.js";
+import { createInterface } from "node:readline";
 
 export function readFile(filePath: string) {
+    console.time("Finished reading the file in")
     const type = checkFilePath(filePath)
 
     if (type != "text" && type != "json") {
@@ -11,9 +13,10 @@ export function readFile(filePath: string) {
     }
 
     const readStream = createReadStream(filePath, { encoding: "utf-8" })
+    const rl = createInterface({ input: readStream, crlfDelay: Infinity })
     const data: parsedLines[] = []
 
-    readStream.on("error", (err) => {
+    rl.on("error", (err) => {
         console.error("Error message: ", err)
         console.error("An Error Occured while reading file, Retrying Operation in 30 seconds. Press Ctrl+C to exit if you want to exit ")
         setTimeout(() => {
@@ -24,18 +27,19 @@ export function readFile(filePath: string) {
 
 
     if (type == "json") {
-        readStream.on("data", (chunk) => {
+        rl.on("line", (chunk) => {
 
         })
     }
     if (type == "text") {
-        readStream.on("data", (chunk) => {
+        rl.on("line", (chunk) => {
             const res = analyzeText(chunk)
             data.push(...res)
         })
     }
 
-    readStream.on('end', () => {
+    rl.on('close', () => {
+
         const levelCounts: { [key: string]: number } = {};
 
         data.forEach(log => {
@@ -43,7 +47,9 @@ export function readFile(filePath: string) {
         })
         console.log("*RESULTS*:")
         console.log(levelCounts)
-        console.log('Finished reading the file.');
+        console.log(`${data.length} Lines Read`)
+        console.timeEnd("Finished reading the file in")
+
     });
 
 }
