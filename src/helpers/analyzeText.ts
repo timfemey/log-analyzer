@@ -1,11 +1,10 @@
+import { EOL } from "node:os";
 import parseLines from "./parseLines.js";
 
-let strData: string = ''
-
 export default function analyzeText(chunk: string | Buffer) {
-    strData += chunk
+    let strData: string = chunk.toString()
 
-    const lines = strData.split("\n")
+    const lines = strData.split(EOL)
 
     const analyzedLines = parseLines(lines)
 
