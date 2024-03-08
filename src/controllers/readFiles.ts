@@ -3,6 +3,8 @@ import { checkFilePath } from "../helpers/checkFilePath.js";
 import { createReadStream } from "node:fs";
 import { parsedLines } from "../helpers/parseLines.js";
 import { createInterface } from "node:readline";
+import JSONStream from "jsonstream-next";
+import analyzeJSON from "../helpers/analyzeJSON.js";
 import { onEnd } from "./onEnd.js";
 
 export function readFile(filePath: string) {
@@ -19,8 +21,23 @@ export function readFile(filePath: string) {
 
 
     if (type == "json") {
+        const jsonStream = readStream.pipe(JSONStream.parse("*"))
 
+        //Incase of Error
+        jsonStream.on('error', function (error) {
+            console.error('Error reading JSON stream:', error);
+        });
 
+        //on Data of Stream
+        jsonStream.on("data", (chunk) => {
+            const res = analyzeJSON(chunk)
+            data.push(res)
+        })
+
+        //On Streqam End or Close
+        jsonStream.on("end", () => {
+            onEnd(data)
+        })
     }
 
 
@@ -29,12 +46,7 @@ export function readFile(filePath: string) {
 
         // On Error while Streaming File
         rl.on("error", (err) => {
-            console.error("Error message: ", err)
-            console.error("An Error Occured while reading file, Retrying Operation in 30 seconds. Press Ctrl+C to exit if you want to exit ")
-            setTimeout(() => {
-                readFile(filePath)
-            }, 31000)
-
+            console.error("Error reading Text File Stream: ", err)
         })
 
 
