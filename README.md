@@ -15,8 +15,8 @@ Welcome to the Log Parser and Analyzer CLI! This Node.js application is designed
 To install the Log Parser and Analyzer CLI, simply clone this repository and install the dependencies using npm:
 
 ```bash
-git clone https://github.com/your-username/log-parser.git
-cd log-parser
+git clone https://github.com/timfemey/log-analyzer.git
+cd log-analyzer
 npm install
 ```
 
